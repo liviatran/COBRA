@@ -1,0 +1,23 @@
+Package: COBRA
+Version: 0.2.900
+Date: 10/17/2023
+Title: COVID-19 Binding Repertoire Assessment
+Authors@R: c(person("Livia", "Tran",
+    role = c("aut", "cre"),
+           email = "livia.tran@ucsf.edu"),
+    person("Steven", "Mack", 
+    role= "aut",
+            email = "steven.mack@ucsf.edu"))
+Maintainer: Livia Tran <livia.tran@ucsf.edu>
+Description: The COVID-19 Binding Repertore Assessment (COBRA) tool is a R pipeline that predicts HLA peptide binding affinity to SARS-CoV2 proteins, and quantifies the number of binders based on strength for a given HLA genotype in a BIGDAWG formatted dataset. Although COBRA was designed with predicting peptide binding affinity for SARS-CoV-2, it can be used to generate binding affinity predictions for HLA alleles and any proteome. For more details on COBRA's workflow, please see the vignette.
+License: GPL (>= 3)
+Encoding: UTF-8
+LazyData: true
+Depends: R (>= 3.6)
+RoxygenNote: 7.2.3
+Author: Livia Tran [aut, cre],
+  Steven Mack [aut]
+SystemRequirements: NetChop 3.1, netMHCpan 4.1, NetCleave, netMHCIIpan 4.0, mhcflurry, Python 3, GNU Parallel
+Imports: dplyr, reticulate, tibble, seqinr, SSHAARP, data.table, gtools, BIGDAWG, future, lgr, utils
+Suggests: knitr, rmarkdown
+VignetteBuilder: knitr

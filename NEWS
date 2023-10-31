@@ -1,0 +1,19 @@
+COBRA 0.2.0.9000 (10/17/2023)
+-----------------------------
+  * Revised allele formatting in bundled look up tables for class II
+  * Modified BALUT to output look up tables with standard HLA naming conventions for Class II alleles
+  * Changed C2BAP to convert BIGDAWG formatted dataset alleles to standard HLA naming conventions for Class II alleles
+  * Modified LUG if c1_predict_method is 'mhcflurry' to output look up tables with standard HLA naming conventions for Class I alleles
+  * Removed the c1_predict_method parameter from C1BAP. Since allele name is now standardized in LUG for mhcflurry, 
+  there is no longer a need to have a separate conditional for mhcflurry while preparing dataset alleles for mapping.
+  
+COBRA 0.1.0.9000 (9/30/2023)
+-----------------------------
+   * Modfiied predict_csv.py in NetCleave (found in https://github.com/liviatran/NetCleave/tree/master/predictor/predictions) to return an empty pandas DataFrame if there are no predictions returned due to a sequence being too short
+   * Modified kmerizeII to skip filtering NetCleave results based on threshold input if the number of rows in the NetCleave output is 0. Added check to count residue length of input FASTA files; if protein is less than 16 residues, include messaging that the protein will not be considered in the look up table and final score generation
+   * Changed log output logic. If res_sel is 'both', 3 log files will be output: a COBRA log, a C1 log, and a C2 log. Else, only a COBRA log will be output. Previously, only C1 and C2 logs were output, and they were output to the temp directory.
+   * Bundled FASTA sequences for Beta and Omicron BA.1 SARS-CoV-2 strains
+
+COBRA 0.0.0.9000 (08/30/2023)
+-----------------------------
+   * Created package with functions COBRA, C1, C2, C1BAP, C2BAP, kmerizeI, kmerizeII, LUG, BALUT, cleaveR, runnetmhcpan, runnetmhc2pan, choppR, run_mhcflurry, configure_python
