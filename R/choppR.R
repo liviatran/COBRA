@@ -1,4 +1,4 @@
-#choppR v 0.1.0 Mar2023
+#choppR v 0.3.0.9000 11/20/23
 #'Runs NetChop on input FASTA files
 #'
 #'Runs NetChop on input FASTA files to predict likelihood of cleavage at a given
@@ -20,6 +20,7 @@
 #'@importFrom tibble add_column
 #'@importFrom lgr lgr
 #'@importFrom utils read.table write.table
+#'@importFrom tools file_path_sans_ext
 #'
 #'@return NULL. Otherwise, a string detailing the error that occurred. 
 #'
@@ -46,13 +47,15 @@ choppR<-function(fastafile = list.files(system.file("extdata/ref_FASTA", package
     
     for(k in 1:length(fastafile)){
       
-      fileout[[k]]<-paste(tempdir(), "/", sapply(strsplit(basename(fastafile[[k]]), ".", fixed=TRUE), "[", 1), "_chop.txt", sep="")
+      fileBase <- file_path_sans_ext(basename(fastafile[[k]]))
+    
+      fileout[[k]]<-paste(tempdir(), "/", fileBase, "_chop.txt", sep="")
       
-      lgr$info(paste("Running NetChop on", gsub(".faa", "", basename(fastafile[[k]]))))
+      lgr$info(paste("Running NetChop on", fileBase))
       
       system(paste(netchop_path, " ", fastafile[[k]], " -t 0.1 > ", fileout[[k]], sep=""))
       
-      fileout_adj[[k]]<-paste(tempdir(), "/", sapply(strsplit(basename(fastafile[[k]]), ".", fixed=TRUE), "[", 1), "_chopadj.txt", sep="")
+      fileout_adj[[k]]<-paste(tempdir(), "/", fileBase, "_chopadj.txt", sep="")
       
       system(paste("sed '/#/d; /-/d; /Number/d; /^$/d;' ", fileout[[k]], " > ", fileout_adj[[k]], sep=""))
       
@@ -73,10 +76,10 @@ choppR<-function(fastafile = list.files(system.file("extdata/ref_FASTA", package
       netfile[[k]]<-netfile[[k]] %>%
         add_column(rownum = row.names(netfile[[k]]))
       
-      lgr$info(paste("Outputting NetChop results for", gsub(".faa", "", basename(fastafile[[k]])), "to the temp directory"))
+      lgr$info(paste("Outputting NetChop results for", fileBase, "to the temp directory"))
                
       #write final adjusted netchop file to temp directory 
-      write.table(netfile[[k]], file = paste(tempdir(), "/", paste(gsub(".faa", "", basename(fastafile[[k]])), "_netchopfinal.txt", sep=""), sep =""), quote = F, row.names = F)
+      write.table(netfile[[k]], file = paste(tempdir(), "/", paste(fileBase, "_netchopfinal.txt", sep=""), sep =""), quote = F, row.names = F)
     }
 }
 

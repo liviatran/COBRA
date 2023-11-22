@@ -1,4 +1,4 @@
-#runNetMHCIIpan v0.1.0 March2023
+#runNetMHCIIpan v 0.3.0.9000 11/20/23
 #'Run NetMHCpan on Class II HLA allele-peptide data
 #'
 #'Runs NetMHCIIpan to obtain peptide binding affinity for CIWD/CWD HLA Class II alleles and possible generated peptides.
@@ -17,6 +17,7 @@
 #'
 #'@importFrom lgr lgr
 #'@importFrom utils read.table
+#'@importFrom tools file_path_sans_ext
 #'
 #'@return NULL. Otherwise, a string detailing the error that occurred. 
 #'
@@ -37,7 +38,7 @@
 
 run_netmhc2pan<-function(faaname = list.files(system.file("extdata/ref_FASTA", package = "COBRA"), full.names = TRUE), netMHC2pan_path, dev = FALSE){
   
-  prot <- gsub(".faa", "", basename(faaname))
+  prot <- file_path_sans_ext(basename(faaname))
   
   all_pep  <- paste(tempdir(), "/ClassII_Peptides_", prot, ".txt", sep="")
   
@@ -60,7 +61,7 @@ run_netmhc2pan<-function(faaname = list.files(system.file("extdata/ref_FASTA", p
       ciwdfiles<-ciwd_1 <- "/Library/Frameworks/R.framework/Versions/4.2/Resources/library/COBRA/extdata/CIWD_C2/ClassIICIWD_test.txt"
     }
 
-  lgr$info(paste("Running NetMHCIIpan in parallel for", gsub(".faa", "", paste(basename(faaname), collapse = ", "))))
+  lgr$info(paste("Running NetMHCIIpan in parallel for", paste(prot, collapse = ", ")))
   
   system(paste("parallel -j 100 '", netMHC2pan_path, " -inptype 1 -f `echo {1}` -BA -a `cat {2}`' '>'", tempdir(), "/`echo {1/.}`_`echo {2/.}`_II_BindAff.txt ::: ", peptidefiles, " ::: " , ciwdfiles, sep=""))
 

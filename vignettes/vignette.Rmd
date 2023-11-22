@@ -15,7 +15,7 @@ editor_options:
 
 ------------------------------------------------------------------------
 
--   Package Version: 0.2.0.900
+-   Package Version: 0.3.0.900
 
 ## Overview
 
@@ -176,14 +176,21 @@ Variants of Concern (VOC) sequences. User submissions for the other VOCs
 (Alpha, Gamma, Omicron BA.2) had issues with completeness or formatting
 issues.</b> <br> <br> COBRA is not limited to only SARS-CoV-2 peptide
 binding affinity analysis; users can provide FASTA sequences for other
-organism proteomes. The FASTA files should be limited to one FASTA
+organism proteomes. <br> The FASTA files should be limited to one FASTA
 sequence per file, and should have files names formatted like
-'<protein>\_<identifier>', where <protein> is the protein name, and
-<identifier> is an identification of the organism or strain. For
+`<protein>_<identifier>`, where `<protein>` is the protein name, and
+`<identifier>` is an identification of the organism or strain. For
 example, the Spike protein for the reference sequence is named
-'S_ref.faa'. Please make sure the provided FASTA files are formatted
-correctly; there should be no unecessary white space, and the sequence
-should start on the line after the identifier.
+'S_ref.faa'. <b> Please make sure the provided FASTA files are formatted
+correctly.</b> The FASTA files should have a description line that begins with a ">",
+and the first 10 characters of the identifier can only contain alphanumeric characters, 
+with the exception of underscores.There should be no unnecessary white space in the 
+sequence, and the sequence should start on the line after the identifier. Improperly FASTA files provided
+for input will cause issues in COBRA execution.
+
+```{r, echo=FALSE, out.width='100%', fig.cap='**Example 1 of a properly formatted FASTA file**'}
+knitr::include_graphics("fastaFile1.png")
+```
 
 ## General Workflow
 

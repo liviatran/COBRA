@@ -1,4 +1,4 @@
-#BALUT v 0.1.0 March2023
+#BALUT v 0.2.0.9000 10/31/23
 #'Creates lookup tables for HLA Class II allele-peptide pairs based on binding affinity strength
 #'
 #'Creates a lookup table for the total number of binders, strong binders, weak binders,

@@ -43,15 +43,13 @@ evaluation, HLA Class II evaluation, or both. Options include "c1", "c2", or "bo
 \item{lookuptable_c1}{The path to the look up table generated for Class I. This parameter ONLY needs to be 
 populated if generatefiles = FALSE and res_sel = 'c1' or 'both'. If generatefiles = TRUE, the generated look up table
 name will be passed to the downstream processing functions. If generatefiles = FALSE, the
-path to the look up table name must be provided. Please make sure the c1_predict_method parameter is populated with the method
-used in the look up table. If a the c1_predict_method is not in alignment with the look up table populated for this parameter, 
-alleles will not be mapped properly. If a mhcflurry look up table is specified for this parameter, but the 
-c1_predict_method is the default 'netmhcpan', alleles will NOT be mapped properly.}
+path to the look up table name must be provided.}
 
 \item{lookuptable_c2}{The path to the look up table generated for Class II. This parameter ONLY needs to be 
 populated if generatefiles = FALSE and res_sel = 'c2' or 'both'. If generatefiles = TRUE, the generated look up table
 name will be passed to the downstream processing functions. If generatefiles = FALSE, the
-path to the look up table name must be provided.}
+path to the look up table name must be provided. Class II peptide-allele mapping to the
+look up table will use defualt values for exclude_forbidDP, exclude_forbidDQ, and dpa_rule, unless otherwise specified.}
 
 \item{c1_predict_method}{Binding Affinity Prediction method used for Class I. Accepted values
 are 'mhcflurry' or 'netmhcpan'. Default is set to 'netmhcpan'.}
@@ -60,14 +58,16 @@ are 'mhcflurry' or 'netmhcpan'. Default is set to 'netmhcpan'.}
 value is set to the inst/extdata/ref_FASTA folder, which contains FASTA files
 for the SARS-CoV2 reference proteins. If the user is using other FASTA files,
 the full path to the file must be provided. FASTA files should only contain
-ONE protein sequence per file if Class II evaluation is desired. The FASTA file
-should be follow this naming convention: '<protein>_<identifier>.faa', where 
-<protein> is the protein name for the given sequence, and <identifier> is the 
-the viral strain or organism identifier. EX: 'S_ref.faa', where 'S' is the Spike
+ONE protein sequence per file if Class II evaluation is desired. FASTA files should
+begin with a single-line description that stars with a ">" sign. The first 10 characters
+should ONLY contain alphanumeric characters, with the exception of underscores. 
+The FASTA file should be follow this naming convention: 
+'<protein>_<identifier>.faa', where  <protein> is the protein name for the given sequence,
+and <identifier> is the  the viral strain or organism identifier. EX: 'S_ref.faa', where 'S' is the Spike
 protein, and 'ref' is the SARS-CoV2 reference strain. If the user wishes to regenerate
 look up tables for the Beta or Omicron BA.1 sequences, 
 list.files(system.file("extdata/<folder>", package = "COBRA"), full.names = TRUE) 
-should be used, where the name of the <folder> is beta_FASTA or omiba1_FASTA. 
+should be used, where the name of the <folder> is beta_FASTA or omiba1_FASTA. Please see
 the vignette for more details.}
 
 \item{exclude_forbidDQ}{A Boolean value for whether forbidden DQ heterodimers should

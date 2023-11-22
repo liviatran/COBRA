@@ -1,3 +1,9 @@
+COBRA 0.3.0.9000 (11/16/2023)
+-----------------------------
+  * Vignette changes
+  * Updated functions to accommodate different extensions for FASTA files
+  * Added additional FASTA file checks in COBRA
+
 COBRA 0.2.0.9000 (10/17/2023)
 -----------------------------
   * Revised allele formatting in bundled look up tables for class II

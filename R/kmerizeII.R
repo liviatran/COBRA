@@ -1,4 +1,4 @@
-#kmerizeII v 0.1.0 Mar 2023
+#kmerizeII v 0.3.0.9000 11/20/23
 #'Filters NetCleave results to likely to be generated epitopes for Class II HLA alleles
 #'
 #'Given a FASTA file, NetCleave generates all possible epitopes (13-17mers) for 
@@ -22,6 +22,7 @@
 #'@importFrom dplyr %>% filter select
 #'@importFrom lgr lgr
 #'@importFrom utils write.table
+#'@importFrom tools file_path_sans_ext
 #'
 #'@return The names of the FASTA files with generated peptides. Otherwise, "No peptides" is returned.
 #'
@@ -31,14 +32,13 @@
 
 kmerizeII<-function(fasta = list.files(system.file("extdata/ref_FASTA", package = "COBRA"), full.names = TRUE), threshold = "relaxed"){
   
-  protfile <- gsub(".faa", "", basename(fasta))
+  protfile <- file_path_sans_ext(basename(fasta))
   
   ncfile <- paste(tempdir(), "/", protfile, "_NetCleave.csv", sep="")
   
   netFiles<-sapply(protfile, function(x) NULL)
   
   lgr$info(paste(threshold, " threshold selected for filtering NetCleave predictions", sep = ""))
-  
   
   for(a in 1:length(ncfile)){
     
@@ -56,12 +56,13 @@ kmerizeII<-function(fasta = list.files(system.file("extdata/ref_FASTA", package 
         select('epitope')
     }
   }
+  
   netOut<-netFiles[lapply(netFiles, nrow) > 0]
   netNoPep<-names(netFiles[lapply(netFiles, nrow) == 0])
   
     if(length(netOut) != 0){
       for(i in 1:length(netOut)){
-        write.table(netOut[[i]], file = paste(tempdir(), "/ClassII_Peptides_", gsub(".faa", "", basename(names(netOut)[[i]])), ".txt", sep=""), row.names = F, quote = F, col.names = F)
+        write.table(netOut[[i]], file = paste(tempdir(), "/ClassII_Peptides_", basename(names(netOut)[[i]]), ".txt", sep=""), row.names = F, quote = F, col.names = F)
         lgr$info(paste("Class II generated peptides for", gsub("_NetCleave.csv", "", basename(names(netOut)[[i]])), "successfully written to the temp directory"))
       }
       if(length(netNoPep) != 0){

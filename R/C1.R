@@ -1,4 +1,4 @@
-#C1 v 0.1.0 Mar2023
+#C1 v 0.2.0.9000 10/31/23
 #'Class I Pipeline Wrapper Function
 #'
 #'Generates peptide binding affinity scores for Class I and the reference SARS-CoV-2 strain.

@@ -1,4 +1,4 @@
-#run_mhcflurryI v 0.1.0 Mar2023
+#run_mhcflurry v 0.3.0.9000 11/20/23
 #'Runs mhcflurry on allele-peptide data 
 #'
 #'Runs mhcflurry to obtain peptide binding affinity for CIWD HLA Class I alleles and possible generated peptides.
@@ -18,6 +18,7 @@
 #'
 #'@importFrom reticulate import
 #'@importFrom lgr lgr
+#'@importFrom tools file_path_sans_ext
 #'
 #'@return TRUE. Otherwise, a string detailing the error that occurred. 
 #'
@@ -48,7 +49,7 @@ run_mhcflurry<-function(FASTAfile = list.files(system.file("extdata/ref_FASTA", 
     ciwdfiles<-"/Library/Frameworks/R.framework/Versions/4.2/Resources/library/COBRA/extdata/CIWD_I_mhcflurry/ClassICIWD_test.txt"
   }
   
-  prot <- gsub(".faa", "", basename(FASTAfile))
+  prot <- file_path_sans_ext(basename(FASTAfile))
   
   all_pep  <- paste(tempdir(), "/", prot, "_pep.txt", sep="")
   
@@ -61,7 +62,7 @@ run_mhcflurry<-function(FASTAfile = list.files(system.file("extdata/ref_FASTA", 
   
   peptidefiles<-paste(names(no_pep), collapse = " ")
   
-  lgr$info(paste("Running mhcflurry in parallel for", gsub(".faa", "", paste(basename(FASTAfile), collapse = ", "))))
+  lgr$info(paste("Running mhcflurry in parallel for", prot, collapse = ", "))
   
   system(paste("parallel -j 100 'python3 /Library/Frameworks/R.framework/Versions/4.2/Resources/library/COBRA/python/run_mhcflurry.py -a {1} -p {2}' ::: ", ciwdfiles,  " ::: ", peptidefiles, sep = ""))
 

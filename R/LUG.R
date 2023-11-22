@@ -1,4 +1,4 @@
-#LUG v 0.1.0 Mar2023
+#LUG v 0.2.0.9000 10/31/23
 #'Creates lookup tables for HLA Class I allele-peptide pairs based on binding affinity strength
 #'
 #'Creates a lookup table for the total number of binders, strong binders, weak binders,

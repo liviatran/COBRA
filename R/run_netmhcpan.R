@@ -1,4 +1,4 @@
-#runNetMHCpan v 0.1.0 Mar2023
+#runNetMHCpan v 0.3.0.9000 11/20/23
 #'Run NetMHCpan on Class I HLA allele-peptide data
 #'
 #'Runs NetMHCpan to obtain peptide binding affinity for CIWD HLA Class I alleles and possible generated peptides.
@@ -17,6 +17,7 @@
 #'
 #'@importFrom lgr lgr
 #'@importFrom utils read.table
+#'@importFrom tools file_path_sans_ext
 #'
 #'@return NULL. Otherwise, a string detailing the error that occurred. 
 #'
@@ -37,7 +38,9 @@
 
 run_netmhcpan<-function(fastafilename = list.files(system.file("extdata/ref_FASTA", package = "COBRA"), full.names = TRUE), netmhcpan_path, dev = FALSE){
   
-  all_pep  <- paste(tempdir(), "/ClassI_Peptides_", gsub(".faa", "", basename(fastafilename)), ".txt", sep="")
+  fileBase <- file_path_sans_ext(basename(fastafilename))
+  
+  all_pep  <- paste(tempdir(), "/ClassI_Peptides_", fileBase, ".txt", sep="")
   
   no_pep<-sapply(all_pep, function(x) NULL)
   
@@ -57,7 +60,7 @@ run_netmhcpan<-function(fastafilename = list.files(system.file("extdata/ref_FAST
     ciwdfiles<-ciwd_1 <- "/Library/Frameworks/R.framework/Versions/4.2/Resources/library/COBRA/extdata/CIWD_C1_netmhcpan/ClassICIWD_test.txt"
   }
   
-  lgr$info(paste("Running NetMHCPan in parallel for", gsub(".faa", "", paste(basename(fastafilename), collapse = ", "))))
+  lgr$info(paste("Running NetMHCPan in parallel for", paste(fileBase, collapse = ", ")))
   
   system(paste("parallel -j 100 '", netmhcpan_path, " -p `echo {1}` -BA -a `cat {2}` -l 8,9,10,11,12' '>'", tempdir(), "/`echo {1/.}`_`echo {2/.}`_I_BindAff.txt ::: ", peptidefiles, " ::: " , ciwdfiles, sep=""), intern = TRUE)
 

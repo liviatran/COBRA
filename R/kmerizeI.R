@@ -1,4 +1,4 @@
-#kmerizeI v 0.1.0 Mar2023
+#kmerizeI v 0.3.0.9000 11/20/23
 #'Generate possible generated peptides during peptide processing for HLA Class I alleles
 #'
 #'Generates a list of estimated 8-12 residue long peptides based on potential
@@ -19,7 +19,8 @@
 #'@importFrom dplyr %>%
 #'@importFrom lgr lgr
 #'@importFrom utils read.table tail write.table
-#'
+#'@importFrom tools file_path_sans_ext
+#' 
 #'@return The names of the FASTA files with generated peptides. Otherwise, "No peptides" is returned.
 #'
 #'@note The user's working directory MUST be set to where the input FASTA files are located if 
@@ -28,7 +29,7 @@
 
 kmerizeI<-function(FASTAfile = list.files(system.file("extdata/ref_FASTA", package = "COBRA"), full.names = TRUE), ba_predict){
   
-  netchopFile <- paste(tempdir(), "/", gsub(".faa", "", basename(FASTAfile)), "_netchopfinal.txt", sep="")
+  netchopFile <- paste(tempdir(), "/", file_path_sans_ext(basename(FASTAfile)), "_netchopfinal.txt", sep="")
   
   netchopOutput<-NULL
   
@@ -80,23 +81,24 @@ kmerizeI<-function(FASTAfile = list.files(system.file("extdata/ref_FASTA", packa
   
   peptidefiles <- peptides[lapply(peptides, nrow) > 0]
   no_peptides <- names(peptides[lapply(peptides, nrow) == 0])
-
+  names(peptidefiles) <- lapply(basename(names(peptidefiles)), gsub, pattern = "_netchopfinal.txt", replacement = "")
+  
   if (length(peptidefiles) != 0) {
     for (k in 1:length(peptidefiles)) {
       if (ba_predict == "mhcflurry") {
         write(noquote(paste(peptides[[k]]$Peptides, collapse = " ")),
-              file = paste(tempdir(), "/", gsub("_netchopfinal.txt", "", basename(names(peptidefiles)[[k]])),"_pep.txt",sep = ""))
+              file = paste(tempdir(), "/", names(peptidefiles)[[k]],"_pep.txt",sep = ""))
       }
       else{
         #write generated peptide file to user's working directory
-        write(noquote(as.vector(peptides[[k]])$Peptides),file = paste(tempdir(),"/ClassI_Peptides_",gsub("_netchopfinal.txt", "", basename(names(peptidefiles)[[k]])),".txt",sep = ""))
+        write(noquote(as.vector(peptides[[k]])$Peptides),file = paste(tempdir(),"/ClassI_Peptides_",names(peptidefiles)[[k]],".txt",sep = ""))
       }
-      lgr$info(paste("Class I generated peptides for", gsub("_netchopfinal.txt", "", basename(names(peptidefiles)[[k]])),"successfully written to the temp directory"))
+      lgr$info(paste("Class I generated peptides for", names(peptidefiles)[[k]],"successfully written to the temp directory"))
     }
     if(length(no_peptides) != 0){
       lgr$info(paste("There were no likely to be generated peptides for", no_peptides, "based on NetChop evaluation and threshold selection"))
     }
-    return(gsub("_netchopfinal.txt", "", basename(names(peptidefiles))))
+    return(basename(names(peptidefiles)))
   } else{
       return("No peptides")
   }

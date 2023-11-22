@@ -1,4 +1,4 @@
-#configure_python v 0.1.0 Mar2023
+#configure_python v 0.2.0.9000 10/31/23
 #'Configure system with required modules to run Python code, either via a virtual environment or the user's machine
 #'
 #'A properly configured Python environment is required to run COBRA for Class II HLA alleles, 

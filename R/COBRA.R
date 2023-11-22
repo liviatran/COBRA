@@ -1,4 +1,4 @@
-#COBRA v 0.1.0 Mar2023
+#COBRA v 0.3.0.9000 11/20/23
 #'COVID-19 Binding Affinity Repertoire Assessment
 #'
 #'Generates peptide binding affinity scores for Class I and/or Class II HLA alleles
@@ -24,14 +24,16 @@
 #'value is set to the inst/extdata/ref_FASTA folder, which contains FASTA files
 #'for the SARS-CoV2 reference proteins. If the user is using other FASTA files,
 #'the full path to the file must be provided. FASTA files should only contain
-#'ONE protein sequence per file if Class II evaluation is desired. The FASTA file
-#'should be follow this naming convention: '<protein>_<identifier>.faa', where 
-#'<protein> is the protein name for the given sequence, and <identifier> is the 
-#'the viral strain or organism identifier. EX: 'S_ref.faa', where 'S' is the Spike
+#'ONE protein sequence per file if Class II evaluation is desired. FASTA files should
+#'begin with a single-line description that stars with a ">" sign. The first 10 characters
+#'should ONLY contain alphanumeric characters, with the exception of underscores. 
+#'The FASTA file should be follow this naming convention: 
+#''<protein>_<identifier>.faa', where  <protein> is the protein name for the given sequence,
+#' and <identifier> is the  the viral strain or organism identifier. EX: 'S_ref.faa', where 'S' is the Spike
 #'protein, and 'ref' is the SARS-CoV2 reference strain. If the user wishes to regenerate
 #'look up tables for the Beta or Omicron BA.1 sequences, 
 #'list.files(system.file("extdata/<folder>", package = "COBRA"), full.names = TRUE) 
-#'should be used, where the name of the <folder> is beta_FASTA or omiba1_FASTA. 
+#'should be used, where the name of the <folder> is beta_FASTA or omiba1_FASTA. Please see
 #'the vignette for more details. 
 #'@param chop_path The path to the user's installation of NetChop. Required for Class I processing.
 #'@param mhcpan_path The path to the user's installation of NetMHCpan. Required for Class I processing.
@@ -153,17 +155,22 @@ COBRA <- function(generatefiles = FALSE, ds_filename = NULL, res_sel = NULL, loo
         return(lgr$fatal(paste(fasta_files[[k]], "does not exist in the provided directory. Please make sure input FASTA files are spelled correctly, and that they are present in the working directory.")))
       }
       
+      fasta_content <- read.fasta(fasta_files[[k]])[[1]]
       #improper FASTA formatting
-      if(length(read.fasta(fasta_files[[k]])[[1]])==0){
+      if(length(fasta_content)==0){
         return(lgr$fatal(paste("No FASTA entries were detected in ", fasta_files[[k]], ". Please make sure the FASTA file is formatted properly and has a peptide sequence.", sep = "")))
       }
       
-      if('>' %in% read.fasta(fasta_files[[k]])[[1]]){
+      if('>' %in% fasta_content){
         return(lgr$fatal(paste("There was a '>' detected in the peptide sequence for ", fasta_files[[k]], ". Please make sure the starting amino acid starts on a new line after the identifier in the FASTA file.", sep = "")))
       }
       
-      if(' ' %in% read.fasta(fasta_files[[k]])[[1]]){
+      if(' ' %in% fasta_content){
         return(lgr$fatal(paste("Unnecessary white space was detected in ", fasta_files[[k]], ". Please make sure there is no extraneous white space or empty lines in the FASTA file.", sep = "")))
+      }
+      
+      if(grepl("[^[:alnum:]_]", substr(attr(fasta_content, "Annot"), 2, 11))){
+        return(lgr$fatal(paste("A non-alphanumeric or non-underscore character was detected in the first 10 characters of the description. Please make sure there are no non-alphanumeric or non-underscore characters in the first 10 characters of the description.")))
       }
     }
     

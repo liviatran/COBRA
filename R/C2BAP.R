@@ -1,4 +1,4 @@
-#C2BAP v 0.1.0 Mar2023
+#C2BAP v 0.2.0.9000 10/31/23
 #'Class II Binding Affinity Predictor
 #'
 #'Compiles a comprehensive list of All Binders, Strong Binders, Weak Binders, and 

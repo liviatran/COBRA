@@ -1,4 +1,4 @@
-#cleaveR v0.1.0 Mar2023
+#cleaveR v 0.3.0.9000 11/20/23
 #'Runs NetCleave on input FASTA files
 #'
 #'Runs NetCleave on input FASTA files to predict likelihood of
@@ -16,6 +16,7 @@
 #'@importFrom lgr lgr
 #'@importFrom utils capture.output
 #'@importFrom seqinr read.fasta
+#'@importFrom tools file_path_sans_ext
 #'
 #'@return TRUE. Otherwise, a string detailing the error that occurred. 
 #'
@@ -37,8 +38,10 @@ cleaveR<-function(fastafiles=list.files(system.file("extdata/ref_FASTA", package
   on.exit(setwd(pwd))
   
   setwd(netcleave_path)
-
-  lgr$info(paste("Running NetCleave in parallel for", gsub(".faa", "", paste(basename(fastafiles), collapse = ", "))))
+  
+  fileBase <- file_path_sans_ext(basename(fastafiles))
+    
+  lgr$info(paste("Running NetCleave in parallel for", paste(fileBase, collapse = ", ")))
   
   for(i in 1:length(fastafiles)){
     f<-read.fasta(fastafiles[[i]])
@@ -49,14 +52,14 @@ cleaveR<-function(fastafiles=list.files(system.file("extdata/ref_FASTA", package
   
   system(paste("parallel -j 100 'python3 NetCleave.py --predict {1} --pred_input 1 --mhc_class II --mhc_allele HLA --data_path ",  netcleave_path, "/data/training_data/II_mass-spectrometry_HLA --td ", tempdir(), "/' ::: ", paste(fastafiles, collapse = " "), sep=""), intern = T)
   
-  netcleave_out <- paste(tempdir(), "/",  gsub(".faa", "", basename(fastafiles)), "_NetCleave.csv", sep="")
+  netcleave_out <- paste(tempdir(), "/",  fileBase, "_NetCleave.csv", sep="")
 
   #if any anticipated NetCleave outputs are missing, stop function
   if(any(!file.exists(netcleave_out))){
     return("NetCleave failed. If non-bundled FASTA files are being used, please check that the provided FASTA files contain the full path, and only contain one protein sequence per file. 
            Please read the NetCleave output for further troubleshooting.")
   } else{
-    lgr$info(paste("NetCleave successfully processed for ", paste(basename(fastafiles), collapse = ","), sep = ""))
+    lgr$info(paste("NetCleave successfully processed for ", paste(basename(fastafiles), collapse = " ,"), sep = ""))
   }
   return(TRUE)
 }

@@ -2,15 +2,16 @@ import os, sys, io
 from silence_tensorflow import silence_tensorflow
 silence_tensorflow()
 sys.stdout = open(os.devnull, 'w')
-from mhcflurry import Class1PresentationPredictor
+from mhcflurry import Class1AffinityPredictor
 #ignore Model.state_updates Tensorflow UserWarning deprecation messages
 import warnings
 warnings.filterwarnings("ignore", category=UserWarning)
 import argparse
+import pandas as pd
 
 def run_mhcflurry(ciwd_file, pep_file):
 
-    predictor = Class1PresentationPredictor.load()
+    predictor = Class1AffinityPredictor.load()
 
     with open(ciwd_file, mode = "r") as file:
         ciwd_alleles = file.read().split(" ")
@@ -18,12 +19,15 @@ def run_mhcflurry(ciwd_file, pep_file):
     with open(pep_file, mode = "r") as file:
         peps = file.read().split()
 
-    alleles = dict((allele, [allele]) for allele in ciwd_alleles)
+    dfs = []
 
-    x = predictor.predict(
-        peptides=peps,
-        alleles = alleles,
-        verbose = 0)
+    for allele in ciwd_alleles:
+        dfs.append(predictor.predict_to_dataframe(
+            peptides= peps,
+            allele = allele,
+            throw = False))
+
+    x = pd.concat(dfs)
 
     c_num = os.path.basename(os.path.splitext(ciwd_file)[0])
     p_file = os.path.basename(os.path.splitext(pep_file)[0])

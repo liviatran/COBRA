@@ -1,6 +1,6 @@
 Package: COBRA
-Version: 0.2.900
-Date: 10/17/2023
+Version: 0.3.900
+Date: 11/16/2023
 Title: COVID-19 Binding Repertoire Assessment
 Authors@R: c(person("Livia", "Tran",
     role = c("aut", "cre"),
@@ -18,6 +18,6 @@ RoxygenNote: 7.2.3
 Author: Livia Tran [aut, cre],
   Steven Mack [aut]
 SystemRequirements: NetChop 3.1, netMHCpan 4.1, NetCleave, netMHCIIpan 4.0, mhcflurry, Python 3, GNU Parallel
-Imports: dplyr, reticulate, tibble, seqinr, SSHAARP, data.table, gtools, BIGDAWG, future, lgr, utils
+Imports: dplyr, reticulate, tibble, seqinr, SSHAARP, data.table, gtools, BIGDAWG, future, lgr, utils, tools
 Suggests: knitr, rmarkdown
 VignetteBuilder: knitr
