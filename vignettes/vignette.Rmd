@@ -1,7 +1,7 @@
 ---
 title: "COBRA: COVID-19 Binding Repertoire Assessment"
 author: "Livia Tran - livia.tran@ucsf.edu"
-date: "October 17, 2023"
+date: "November 27, 2023"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{COBRA Vignette}
@@ -189,7 +189,7 @@ sequence, and the sequence should start on the line after the identifier. Improp
 for input will cause issues in COBRA execution.
 
 ```{r, echo=FALSE, out.width='100%', fig.cap='**Example 1 of a properly formatted FASTA file**'}
-knitr::include_graphics("fastaFile1.png")
+knitr::include_graphics("fasta_file.png")
 ```
 
 ## General Workflow
@@ -403,7 +403,10 @@ for Class II processing.
 ## COBRA Output
 
 All outputs will be to the user's working directory at the time of COBRA
-execution. \### Logs Logs will be generated for the COBRA pipeline so
+execution. 
+
+### Logs 
+Logs will be generated for the COBRA pipeline so
 users can easily view what step of the pipeline is currently executing,
 and quickly detect any errors that may have occurred. If only one
 pipeline is selected, a log named `COBRA_<random alphanumeric>.log` will
@@ -432,4 +435,41 @@ variant will be 'ref'.
 Generated score files will be named
 `<dataset>_ScoreOutput_<res>_<random alphanumeric sequence>`, where
 <dataset> is the name of the dataset and <res> is the pipeline
-selection.
+selection. Scores for each column will be a summation of the subject's genotype,
+depending on the pipeline selected, and whether the allele is present in the 
+look up table for that pipeline. Please see below for an example on how to 
+interpret score results for a 'both' pipeline execution:
+<br>
+<br>
+```{r, out.width='75%',echo=FALSE, fig.align="center", fig.cap="**Example dataset**"}
+knitr::include_graphics("ex_dataset.png")
+```
+<br>
+```{r, out.width='75%',echo=FALSE, fig.align="center", fig.cap="**Class I look up table example**"}
+knitr::include_graphics("lookuptable_c1.png")
+```
+<br>
+```{r, out.width='75%',echo=FALSE, fig.align="center", fig.cap="**Class II look up table example**"}
+knitr::include_graphics("lookuptable_c2.png")
+```
+<br>
+```{r, out.width='75%',echo=FALSE, fig.align="center", fig.cap="**Example score output**"}
+knitr::include_graphics("ex_scores.png")
+```
+<br>
+The AllBinders column will be used as an example on how scores are generated. 
+<br>
+There were 574 total peptides assessed for each Class I allele, and 83 for each Class II allele.
+<br>
+<br>
+<b>Subject A's alleles:</b> A\*01:01, A\*01:02, DRB1\*01:01, DRB1\*01:02, DPA1\*02:01-DPB1\*01:01.
+<br>
+Since Subject A's alleles are all present in the look up table, we would expect
+1397 total binders (574\*3) + (83\*3).
+<br>
+<br>
+<b>Subject B's alleles:</b> A\*01:01, A\*01:03, DRB1\*01:01, DRB1\*05:01, DPA1\*02:01-DPB1\*01:01, and DPA1\*03:01-DPB1\*01:01
+<br>
+For Subject B, A\*01:03, DRB1\*05:01, and DPA1\*03:01-DPB1\*01:01 are not present in the look up table. 
+Thus, we would expect 740 total binders (574) + (83\*2). 
+
